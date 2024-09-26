@@ -43,7 +43,7 @@ class _stride_base< dynamic_stride >
   ptrdiff_t Stride() const
   { return _step; }
 
-  private:
+  // private:
   ptrdiff_t _step{1};
 };
 
@@ -61,10 +61,7 @@ class _extent_base
       [[maybe_unused]]size_t    sz        = 0
     , [[maybe_unused]]ptrdiff_t step_size = 1)
     : _stride_base<_Sd>(step_size)
-  { if (sz > _Ext) {
-      throw ::mpc::detail::AssertException();
-    }
-  }
+  {}
 
   static constexpr size_t Size()
   { return _Ext; }
@@ -90,6 +87,7 @@ class _extent_base< dynamic_extent, _Sd >
     , _ext(sz)
   {}
 
+  // / _stride_base<_Sd>::Stride()
   constexpr size_t Size() const
   { return _ext; }
 
@@ -320,7 +318,7 @@ class Slice
 
   template< std::contiguous_iterator It >
   Slice(It I, size_t cnt = 0, ptrdiff_t stp = 1)
-    : _extent_base< _Ext, _Sd >(cnt, stp)
+    : _extent_base< _Ext, _Sd >(cnt / stp, stp)
     , _ptr(std::to_address(I))
   {}
 
