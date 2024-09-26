@@ -8,12 +8,10 @@
 #include <limits>
 #include <vector>
 
-
 // Like in stdlib according to cppreference
 inline constexpr size_t    dynamic_extent = std::numeric_limits<size_t>::max();
 // Same vibes
 inline constexpr ptrdiff_t dynamic_stride = std::numeric_limits<size_t>::max();
-
 
 
 // Base structure
