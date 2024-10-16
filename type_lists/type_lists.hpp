@@ -367,32 +367,67 @@ using ToTuple = typename Conv2Tuple<T>::H;
 template
 	< template
 		< class, class > typename _Cmnd
-	, class T
-	, TypeList TL >
+	, class H
+	, TypeList AS >
 struct PileObj
 { using InnerVal = typename PileObj
 		< _Cmnd
 		, _Cmnd
-			< T
-			, typename TL::Head>
-		, typename TL::Tail>::InnerVal;
+			< H
+			, typename AS::Head>
+		, typename AS::Tail>::InnerVal;
 };
 
 template
 	< template
 		< class, class > typename _Cmnd
-	, class T
+	, class H
 	, Empty empty >
-struct PileObj<_Cmnd, T, empty>
-{ using InnerVal = T; };
+struct PileObj<_Cmnd, H, empty>
+{ using InnerVal = H; };
 
 // test interface
 template
 	< template
 		< class, class > typename _Cmnd
-	, class T
-	, TypeList TL >
-using Foldl = typename PileObj<_Cmnd, T, TL>::InnerVal;
+	, class H
+	, TypeList AS >
+using Foldl = typename PileObj<_Cmnd, H, AS>::InnerVal;
+
+
+
+template
+	< template
+		< class, class > typename _Cmnd
+	, typename H
+	, TypeList AS
+	>
+struct PileRObj {
+  using Value = _Cmnd
+		< typename AS::Head
+		, typename PileRObj
+			< _Cmnd
+			, H
+			, typename AS::Tail>::Value>;
+};
+
+template
+	< template
+		< class, class > typename _Cmnd
+	, typename H
+	, TypeList AS>
+  requires Empty<AS>
+struct PileRObj<_Cmnd, H, AS>
+{ using Value = H; };
+
+template
+	< template
+		< class, class > typename _Cmnd
+	, typename H
+	, TypeList AS
+	>
+using Foldr = PileRObj<_Cmnd, H, AS>::Value;
+
 
 
 
